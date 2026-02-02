@@ -19,7 +19,7 @@ public class DicomCompressionService {
         File toolFile = new File(System.getProperty("user.dir") + File.separator + TOOL_FOLDER + File.separator + TOOL_NAME);
 
         if (!toolFile.exists()) {
-            System.err.println("❌ ERROR: Executable not found at: " + toolFile.getAbsolutePath());
+            System.err.println("ERROR: Executable not found at: " + toolFile.getAbsolutePath());
             return;
         }
 
