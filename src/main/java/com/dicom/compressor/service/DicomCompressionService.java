@@ -9,7 +9,7 @@ import java.nio.file.StandardCopyOption;
 public class DicomCompressionService {
 
     // IMPORTANT: Point directly to the .exe file, not just the folder
-    private static final String TOOL_NAME = "dcmcjpeg.exe";
+    private static final String TOOL_NAME = "dcmcjpls.exe";
     private static final String TOOL_FOLDER = "tools";
 
     public void compressFile(File originalFile) {
@@ -28,7 +28,6 @@ public class DicomCompressionService {
         try {
             ProcessBuilder pb = new ProcessBuilder(
                     toolFile.getAbsolutePath(), // Use the verified full path to the .exe
-                    "+e1",
                     originalFile.getAbsolutePath(),
                     compressedFile.getAbsolutePath()
             );
