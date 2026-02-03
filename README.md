@@ -42,7 +42,7 @@ compressor/
 
 1. **Clone the Repository:**
 ```bash
-git clone [https://github.com/SushantAhuja1/dicom-compressor.git](https://github.com/SushantAhuja1/dicom-compressor.git)
+git clone https://github.com/SushantAhuja1/dicom-compressor.git
 cd dicom-compressor
 
 ```
