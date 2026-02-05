@@ -1,63 +1,83 @@
-```markdown
+
 # DICOM Compression Service (DCMTK Wrapper)
 
-A robust Spring Boot utility designed to perform **Lossless JPEG Compression** on medical DICOM images. This project uses a "Hybrid Wrapper" approach, combining the ease of Java for file management with the high-performance C++ engine of **DCMTK**.
+A high-performance **Spring Boot–based command-line utility** for performing **JPEG-LS Lossless compression** on medical DICOM images.  
+This project follows a **Hybrid Wrapper Architecture**, combining Java’s portability and file system management with the optimized native C++ compression engine provided by **DCMTK**.
+
+The objective is to significantly reduce storage usage **without any diagnostic image quality loss**, making it suitable for clinical and archival workflows.
+
+---
 
 ## 🚀 How It Works
 
-The application operates as a command-line utility that automates the medical imaging workflow:
+The compression workflow consists of the following steps:
 
-1.  **Scanning:** The Java layer scans a user-provided directory for `.dcm` files.
-2.  **Execution:** For each file found, the application triggers a native process using `ProcessBuilder` to call the `dcmcjpeg.exe` tool located in the `/tools` folder.
-3.  **Compression:** The tool applies **Lossless JPEG (Process 14)** compression (flag `+e1`). This ensures that 100% of the medical image quality is preserved while reducing file size by up to 50-70%.
-4.  **In-Place Saving:** The service uses an atomic move operation to overwrite the original file with the compressed version, maintaining the same file name and directory structure.
+1. **Directory Scanning**  
+   The Java service scans the user-provided folder recursively to locate `.dcm` files.
 
-## 🛠️ Project Stack
+2. **Native Tool Invocation**  
+   For each file found, Java uses `ProcessBuilder` to invoke DCMTK’s native **JPEG-LS compressor** (`dcmcjpls.exe`) from the local `tools/` directory.
 
-* **Java 17** (Amazon Corretto / OpenJDK)
-* **Spring Boot 3.4.1**
-* **DCMTK (3.7.0)** - Native C++ DICOM Toolkit
-* **Maven** - Dependency Management
+3. **Lossless Compression**  
+   The tool applies **JPEG-LS Lossless compression** which provides:
 
-## 📂 Folder Structure
+   - ✔ Faster compression speed  
+   - ✔ Lower CPU usage  
+   - ✔ Better compression ratio than classic JPEG Lossless
+   - 
+   Typical size reduction: **40–70% (varies by modality)**
 
-```text
-compressor/
-├── src/main/java/      # Java Source Code
-├── tools/              # Native Binaries
-│   ├── dcmcjpeg.exe    # The Compression Engine
-│   └── *.dll           # Required Dynamic Link Libraries
-├── pom.xml             # Maven Project Configuration
-└── README.md           # Project Documentation
+4. **Atomic File Replacement**  
+   The compressed output safely replaces the original file using atomic file move operations to avoid corruption and partial writes.
 
-```
+---
+
+## 🛠️ Technology Stack
+
+- **Java 17** (Amazon Corretto / OpenJDK)
+- **Spring Boot 3.4.1**
+- **DCMTK 3.7.0**
+- **Maven**
+
+---
 
 ## ⚙️ Prerequisites
 
-* **Java 17** installed.
-* **Windows OS** (Current binaries are for Windows x86_64).
-* **Microsoft Visual C++ Redistributable**: Required to run DCMTK's native `.dll` files.
+### Required
+
+- **Java 17**
+- **Windows OS (64-bit)**
+- **Microsoft Visual C++ Redistributable (x64)**
+
+---
 
 ## 🏃 Getting Started
 
-1. **Clone the Repository:**
-```bash
-git clone [https://github.com/SushantAhuja1/dicom-compressor.git](https://github.com/SushantAhuja1/dicom-compressor.git)
+### 1️⃣ Clone Repository
+
+git clone https://github.com/SushantAhuja1/dicom-compressor.git  
 cd dicom-compressor
 
-```
-2. **Build the Project:**
-Using your IDE (IntelliJ) or the command line:
-```bash
+---
+
+### 2️⃣ Build Executable JAR
+
 mvn clean install
 
-```
-3. **Run the Application:**
-Run `DicomCompressorApplication.java`. The console will prompt you:
-`Enter DICOM folder path: `
-4. **Enter Path:**
-Provide the full path to your DICOM images (e.g., `C:\Users\Name\Downloads\images`).
+Generated file location:
 
-## ✅ Verification
+target/compressor-0.0.1-SNAPSHOT.jar
 
-Once the process finishes with `✅ Compressed: filename.dcm`, you can verify the result by checking the file properties. You should see a significant reduction in **Size on Disk** while the image remains readable by any standard DICOM viewer (like RadiAnt or Horos).
+---
+
+### 3️⃣ Run Application
+
+java -jar .\target\compressor-0.0.1-SNAPSHOT.jar <source_folder>
+
+---
+
+Open compressed files using:
+
+- RadiAnt DICOM Viewer  
+- MicroDicom  
+- Horos  
